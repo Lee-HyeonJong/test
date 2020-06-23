@@ -1,0 +1,69 @@
+입력:n
+n*n배열선언
+
+[x][y] 에서 input할때마다 x++
+조건(퀸이서로 공격못하게)만족하면 배열에 input, else y++해서 
+조건 모두만족안하면 backtracking
+x -> n-1까지 모두 만족하면 count++
+
+backtracking하거나 모두만족 -> y++하고 다시 처음부터
+
+출력:count
+
+1차원배열을 사용해서 풀수도 있다(더 대중적인듯?)
+1차원배열의 index를 열로 잡고 값을 행으로 취급해서 사용.1차원배열을 2차원배열처럼 사용할수있음
+걍2차원배열을써 미친놈들아..
+열 고정하고 행for문으로 돌려주면서 백트래킹해서 값이 맞게들어갈때마다 count++ 시켜서 
+
+**1차원배열을 2차원배열처럼 사용할수있음 -> index를 행, 값을 열로 취급해줘면됨
+backtracking은 전수검사다 
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main{
+	public static int[] col;
+	public static int N,count;
+	
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(bf.readLine());
+		
+		col=new int[N+1];
+		
+		for(int i=1; i<=N; i++) {
+			col[1] = i; //1차원배열의 index를 행, value를 열(퀸은 각행당 한열씩에만 있을수있음)
+			dfs(1); 
+		}
+		System.out.println(count);
+	}
+	
+	public static void dfs(int row) {
+		if(row==N) { //col배열을 끝까지 채웠다 -> 조건을 만족하는 값을찾았다
+			count++;
+		}
+		else { 
+			for(int i=1; i<=N; i++) {
+				col[row+1] = i;
+				if(check(row+1)) {  //퀸이 서로 공격하지않을 조건
+					dfs(row+1);
+				}else {
+					col[row+1] = 0;
+				}
+			}
+		}
+		col[row] = 0; //초기화
+	}
+	
+	public static boolean check(int x) {
+		for(int i=1; i<x; i++) {
+			if(col[x] == col[i])  //열비교
+				return false;
+			if(Math.abs(col[x] - col[i]) == Math.abs(x-i)) // 2차원배열에서 대각선에 존재하는지 검사 할때 두 배열이 기울기가 1임을 이용한다(두 점의 x축과 y축의 차는 같다)
+				return false;
+		}
+		return true;
+	}
+}
